@@ -1,0 +1,1 @@
+from setuptools_black.setuptools_command import BuildCommand, FormatCommand
