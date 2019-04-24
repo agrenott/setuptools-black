@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 with open("README.md", "r") as fh:
     README = fh.read()
 
@@ -16,7 +16,10 @@ setup(
     packages=find_packages(),
     install_requires=["black>=18.9b0"],
     entry_points={
-        "distutils.commands": ["format = setuptools_black.setuptools_command:FormatCommand"]
+        "distutils.commands": [
+            "format = setuptools_black.setuptools_command:FormatCommand",
+            "build_py = setuptools_black.setuptools_command:BuildCommand",
+        ]
     },
     author="Aurelien Grenotton",
     author_email="agrenott@gmail.com",
