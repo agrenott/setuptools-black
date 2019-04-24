@@ -1,6 +1,6 @@
 Custom setuptools command for black formatting tool (see https://github.com/ambv/black).
 
-This package enforces code formatting validation using black at build time, by overriding the `build_py` setup command.
+This package enforces code formatting validation using black at build time, by overriding the `build` distutils command.
 Build will fail if there's any formatting error.
 
 In your setup.py:
@@ -8,7 +8,7 @@ In your setup.py:
 ...
 setuptools.setup(
 ...
-    setup_requires=["setuptools-black"],
+    setup_requires=["setuptools-black>=0.1.3"],
 ...
 )
 ```

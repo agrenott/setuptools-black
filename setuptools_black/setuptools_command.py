@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 import setuptools
-import setuptools.command.build_py
+from distutils.command.build import build as _build
 import pkg_resources
 
 
@@ -49,10 +49,10 @@ class FormatCommand(setuptools.Command):
             )
 
 
-class BuildCommand(setuptools.command.build_py.build_py):
-    """Customized build_py command, checking code formatting before build"""
+class BuildCommand(_build):
+    """Customized build command, checking code formatting before build"""
 
     def run(self):
         self.distribution.get_command_obj("format").check = True
         self.run_command("format")
-        return setuptools.command.build_py.build_py.run(self)
+        return _build.run(self)
