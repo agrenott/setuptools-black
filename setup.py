@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 with open("README.md", "r") as fh:
     README = fh.read()
 
@@ -18,8 +18,7 @@ setup(
     zip_safe=True,
     entry_points={
         "distutils.commands": [
-            "format = setuptools_black.setuptools_command:FormatCommand",
-            "build = setuptools_black.setuptools_command:BuildCommand",
+            "format = setuptools_black.setuptools_command:FormatCommand"
         ]
     },
     author="Aurelien Grenotton",
