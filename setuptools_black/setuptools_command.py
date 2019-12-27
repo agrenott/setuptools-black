@@ -25,9 +25,36 @@ class FormatCommand(setuptools.Command):
     def finalize_options(self):
         pass
 
+    def package_files(self):
+        """Collect the files/dirs included in the registered modules."""
+        seen_package_directories = ()
+        directories = self.distribution.package_dir or {}
+        empty_directory_exists = '' in directories
+        packages = self.distribution.packages or []
+        for package in packages:
+            package_directory = package
+            if package in directories:
+                package_directory = directories[package]
+            elif empty_directory_exists:
+                package_directory = os.path.join(directories[''],
+                                                 package_directory)
+
+            if package_directory.startswith(seen_package_directories):
+                continue
+
+            seen_package_directories += (package_directory + '.',)
+            yield package_directory
+
+    def distribution_files(self):
+        """Collect package and module files."""
+        for package in self.package_files():
+            yield package
+
+        yield 'setup.py'
+
     def run(self):
         # Sources to format (include setup.py and tests if it exists)
-        sources = self.distribution.packages + ["setup.py"]
+        sources = list(self.distribution_files())
         if os.path.isdir("tests"):
             sources += ["tests"]
         try:
