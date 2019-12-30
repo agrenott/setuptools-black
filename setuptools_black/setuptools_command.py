@@ -32,19 +32,25 @@ class FormatCommand(setuptools.Command):
             sources.add("setup.py")
         if os.path.isdir("tests"):
             sources.add("tests")
-        parameters = sorted(sources)
+        params = sorted(sources)
 
         try:
             # Sadly, setup_requires only get eggs, not a proper install
+            env = os.environ
+            sep = os.path.sep
             python_path = ":".join(
-                [x for x in pkg_resources.working_set.entries if "/.eggs/" in x]
+                [
+                    path
+                    for path in pkg_resources.working_set.entries
+                    if f"{sep}.eggs{sep}" in path
+                ]
             )
+            env.update({"PYTHONPATH": python_path})
+
             if self.check:
-                parameters.insert(0, "--check")
+                params.insert(0, "--check")
             subprocess.run(
-                [sys.executable, "-m", "black"] + parameters,
-                check=True,
-                env={"PYTHONPATH": python_path},
+                [sys.executable, "-m", "black"] + params, check=True, env=env,
             )
         except subprocess.CalledProcessError:
             # Raise exception on formatting error

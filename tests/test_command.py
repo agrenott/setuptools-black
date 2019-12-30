@@ -23,15 +23,30 @@ class TestFormatCommand:
         with no setup.py nor tests.
         """
         dist = Distribution()
+        # Switch to fake project's root
         os.chdir(TEST_PATH)
         dist.packages = find_packages("data")
         FormatCommand(dist).run()
 
         run_mock.assert_called_with(
-            [sys.executable, "-m", "black", "fake_package"],
-            check=True,
-            env={"PYTHONPATH": ""},
+            [sys.executable, "-m", "black", "fake_package"], check=True, env=mock.ANY,
         )
+
+    @staticmethod
+    @mock.patch("subprocess.run")
+    @mock.patch("setuptools_black.setuptools_command.pkg_resources")
+    def test_run_eggs(pkg_resources_mock: mock.Mock, run_mock: mock.Mock):
+        """Test .eggs are added to PYTHONPATH when calling black."""
+        # Mock setup behavior for installed egg
+        pkg_resources_mock.working_set.entries = [
+            os.path.join(os.getcwd(), ".eggs", "fake_black.egg")
+        ]
+        dist = Distribution()
+        FormatCommand(dist).run()
+
+        # Ensure .eggs paths are added to PYTHONPATH
+        path = run_mock.call_args[1]["env"]["PYTHONPATH"]
+        assert os.path.join(".eggs", "fake_black.egg") in path
 
     @staticmethod
     @mock.patch("subprocess.run")
@@ -49,7 +64,7 @@ class TestFormatCommand:
         run_mock.assert_called_with(
             [sys.executable, "-m", "black", "--check", "fake_package"],
             check=True,
-            env={"PYTHONPATH": ""},
+            env=mock.ANY,
         )
 
     @staticmethod
@@ -66,7 +81,7 @@ class TestFormatCommand:
         run_mock.assert_called_with(
             [sys.executable, "-m", "black", "setup.py", "setuptools_black", "tests"],
             check=True,
-            env={"PYTHONPATH": ""},
+            env=mock.ANY,
         )
 
     @staticmethod
