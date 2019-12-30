@@ -6,4 +6,9 @@ __pycache__/
 build/
 dist/
 .eggs/
-
+.venv*/
+.vscode/
+.tox
+.mypy_cache/
+coverage.xml
+.coverage

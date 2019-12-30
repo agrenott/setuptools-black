@@ -4,8 +4,9 @@ from setuptools import setup, find_packages
 
 
 __version__ = "0.1.4"
-with open("README.md", "r") as fh:
-    README = fh.read()
+# Read in binary and decode, due to special UTF8 characters inside README
+with open("README.md", "rb") as fh:
+    README = fh.read().decode()
 
 setup(
     name="setuptools-black",

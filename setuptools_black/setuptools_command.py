@@ -27,18 +27,22 @@ class FormatCommand(setuptools.Command):
 
     def run(self):
         # Sources to format (include setup.py and tests if it exists)
-        sources = self.distribution.packages + ["setup.py"]
+        sources = set(self.distribution.packages or [])
+        if os.path.exists("setup.py"):
+            sources.add("setup.py")
         if os.path.isdir("tests"):
-            sources += ["tests"]
+            sources.add("tests")
+        parameters = sorted(sources)
+
         try:
             # Sadly, setup_requires only get eggs, not a proper install
             python_path = ":".join(
                 [x for x in pkg_resources.working_set.entries if "/.eggs/" in x]
             )
             if self.check:
-                sources.insert(0, "--check")
+                parameters.insert(0, "--check")
             subprocess.run(
-                [sys.executable, "-m", "black"] + sources,
+                [sys.executable, "-m", "black"] + parameters,
                 check=True,
                 env={"PYTHONPATH": python_path},
             )
