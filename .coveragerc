@@ -1,0 +1,8 @@
+[run]
+source =
+    setuptools_black
+    tests
+    
+[report]
+omit = 
+    */.tox/*
