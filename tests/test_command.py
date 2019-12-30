@@ -1,5 +1,6 @@
 """FormatCommand unit tests."""
 
+import contextlib
 import os
 import subprocess
 import sys
@@ -14,6 +15,17 @@ import setuptools_black
 TEST_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
+@contextlib.contextmanager
+def change_dir(new_dir):
+    """Change directory to new_dir, and restore afterwards."""
+    curdir = os.getcwd()
+    try:
+        os.chdir(new_dir)
+        yield
+    finally:
+        os.chdir(curdir)
+
+
 class TestFormatCommand:
     @staticmethod
     @mock.patch("subprocess.run")
@@ -24,9 +36,9 @@ class TestFormatCommand:
         """
         dist = Distribution()
         # Switch to fake project's root
-        os.chdir(TEST_PATH)
-        dist.packages = find_packages("data")
-        FormatCommand(dist).run()
+        with change_dir(TEST_PATH):
+            dist.packages = find_packages("data")
+            FormatCommand(dist).run()
 
         run_mock.assert_called_with(
             [sys.executable, "-m", "black", "fake_package"], check=True, env=mock.ANY,
@@ -55,11 +67,11 @@ class TestFormatCommand:
         Test check-only run.
         """
         dist = Distribution()
-        os.chdir(TEST_PATH)
-        dist.packages = find_packages("data")
-        command = FormatCommand(dist)
-        command.check = True
-        command.run()
+        with change_dir(TEST_PATH):
+            dist.packages = find_packages("data")
+            command = FormatCommand(dist)
+            command.check = True
+            command.run()
 
         run_mock.assert_called_with(
             [sys.executable, "-m", "black", "--check", "fake_package"],
@@ -68,21 +80,31 @@ class TestFormatCommand:
         )
 
     @staticmethod
-    @mock.patch("subprocess.run")
-    def test_run_additional_files(run_mock: mock.Mock):
+    def test_distribution_files_additional_files():
         """
         Test setup.py and tests discovery.
         """
         dist = Distribution()
-        os.chdir(os.path.join(TEST_PATH, ".."))
-        dist.packages = find_packages()
-        FormatCommand(dist).run()
+        with change_dir(os.path.join(TEST_PATH, "..")):
+            dist.packages = find_packages()
+            files = FormatCommand(dist).distribution_files()
 
-        run_mock.assert_called_with(
-            [sys.executable, "-m", "black", "setup.py", "setuptools_black", "tests"],
-            check=True,
-            env=mock.ANY,
-        )
+            # Ensure data is appended to fake_package
+            assert set(files) == {"setup.py", "setuptools_black", "tests"}
+
+    @staticmethod
+    def test_distribution_files_package_dir():
+        """
+        Test packages collection when pacakge_dir is used to get packages from sub-directory.
+        """
+        dist = Distribution()
+        with change_dir(TEST_PATH):
+            dist.packages = find_packages("data")
+            dist.package_dir = {"": "data"}
+            files = FormatCommand(dist).distribution_files()
+
+            # Ensure data is appended to fake_package
+            assert list(files) == [os.path.join("data", "fake_package")]
 
     @staticmethod
     @mock.patch("subprocess.run")

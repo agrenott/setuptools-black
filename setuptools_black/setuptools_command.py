@@ -5,8 +5,9 @@ import os
 import subprocess
 import sys
 
-import setuptools
 from distutils.command.build import build as _build
+import setuptools
+import setuptools.command.build_py
 import pkg_resources
 
 
@@ -25,13 +26,21 @@ class FormatCommand(setuptools.Command):
     def finalize_options(self):
         pass
 
+    def distribution_files(self):
+        """Collect package and module files."""
+        build_py = self.get_finalized_command("build_py")
+        for package in self.distribution.packages or []:
+            # Get the proper package dir when package_dir is used
+            yield build_py.get_package_dir(package)
+
+        for additional_file in ["setup.py", "tests"]:
+            if os.path.exists(additional_file):
+                yield additional_file
+
     def run(self):
+        """Call black using subprocess module."""
         # Sources to format (include setup.py and tests if it exists)
-        sources = set(self.distribution.packages or [])
-        if os.path.exists("setup.py"):
-            sources.add("setup.py")
-        if os.path.isdir("tests"):
-            sources.add("tests")
+        sources = set(self.distribution_files())
         params = sorted(sources)
 
         try:
@@ -63,6 +72,7 @@ class BuildCommand(_build):
     """Customized build command, checking code formatting before build"""
 
     def run(self):
+        """Check format, then build."""
         self.distribution.get_command_obj("format").check = True
         self.run_command("format")
         return _build.run(self)

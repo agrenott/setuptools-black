@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 # Read in binary and decode, due to special UTF8 characters inside README
 with open("README.md", "rb") as fh:
     README = fh.read().decode()
