@@ -4,6 +4,7 @@
 ![PyPI - Status](https://img.shields.io/pypi/status/setuptools-black)
 ![PyPI - License](https://img.shields.io/pypi/l/setuptools-black)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/setuptools-black)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Custom setuptools command for black formatting tool (see https://github.com/ambv/black).
 
