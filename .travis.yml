@@ -1,10 +1,21 @@
 language: python
 python:
-  - "3.6"
-  - "3.7"
-  - "3.8"
+- '3.6'
+- '3.7'
+- '3.8'
 install: pip install tox-travis
 script: tox
 after_success:
-    - pip install coveralls
-    - coveralls
+- pip install coveralls
+- coveralls
+
+# Automated delivery to PyPi on tag
+deploy:
+  provider: pypi
+  user: "__token__"
+  password:
+    secure: JskkRY/FZQZDLpScO7hgQr5Gdqd4dOAq8wCRtSRd32CIlEv9lCMsDLrAAvXFpVXDVR/nClffEspDb8pZ8QaN75J7RVWxiBKw9gHOrqxaK+/OTvqXlEPwT4VMtD0a6p0JSemdXJp7/ywHS1bmTV6Bce5JMri7YzPyA1dSuMDiOm4z74LE0EfyB374dGqzjLzh3/z5+t95HW5Zh6rvCGzfP/JhbXB04v0eUBwjouuePFNF6Jq0lcn7oLATRf8NACnb93qPIvOUzVNQfGQpi2DdNHv+Ce95mNZfWVQ/dl5qUGqPN6H4rubmWLndSTb8sfGJqUC6X7DXMwACFNq3+DraVnh/1FLZYkT22sQ/VEVNgIDNrOxTm0fIzaJ+d/ypwvBq6oOw22iNNzVxSPESIlxxe09MB13y3w4RQmjC1PdsDDQwk6KZsuVq/RXMXLiMNafcRuf1FOZLJhVcF240gvaCPvePkzLE9V+sOUTS8QigVNke73YrRBTzO3a8qg4xqRRx36g9KF5V1PmShZZBsKd0QVh1Mrs5WGVtVGvuvCtxzYh1RklMoHLIGoSrBOXovrovE7UJJqi16rA8zTZ9XFiFvQV02jMUdKj1l4fFATug+64DmcWSV4o65gK7hqNpzQq8gVSO8TjZ3SWkIpq6mIbuVyvA8Ie+TACp4AOxsO8sgvI=
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
