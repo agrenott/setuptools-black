@@ -6,8 +6,9 @@ python:
 install: pip install tox-travis
 script: tox
 after_success:
-- pip install coveralls
+- pip install coveralls codecov 'coverage<5'
 - coveralls
+- codecov
 
 # Automated delivery to PyPi on tag
 deploy:
