@@ -1,4 +1,9 @@
-[![Build Status](https://travis-ci.com/agrenott/setuptools-black.svg?branch=master)](https://travis-ci.com/agrenott/setuptools-black) [![Coverage Status](https://coveralls.io/repos/github/agrenott/setuptools-black/badge.svg?branch=master)](https://coveralls.io/github/agrenott/setuptools-black?branch=master)
+[![Build Status](https://travis-ci.com/agrenott/setuptools-black.svg?branch=master)](https://travis-ci.com/agrenott/setuptools-black) 
+[![Coverage Status](https://coveralls.io/repos/github/agrenott/setuptools-black/badge.svg?branch=master)](https://coveralls.io/github/agrenott/setuptools-black?branch=master)
+![PyPI](https://img.shields.io/pypi/v/setuptools-black)
+![PyPI - Status](https://img.shields.io/pypi/status/setuptools-black)
+![PyPI - License](https://img.shields.io/pypi/l/setuptools-black)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/setuptools-black)
 
 Custom setuptools command for black formatting tool (see https://github.com/ambv/black).
 
