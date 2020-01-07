@@ -89,8 +89,15 @@ class TestFormatCommand:
             dist.packages = find_packages()
             files = FormatCommand(dist).distribution_files()
 
-            # Ensure data is appended to fake_package
-            assert set(files) == {"setup.py", "setuptools_black", "tests"}
+            # root dir contains a "tests" folder
+            assert set(files) == {"setuptools_black", "tests"}
+
+        with change_dir(os.path.join(TEST_PATH, "data")):
+            dist.packages = find_packages()
+            files = FormatCommand(dist).distribution_files()
+
+            # data dir contains a "setup.py" file
+            assert set(files) == {"fake_package", "setup.py"}
 
     @staticmethod
     def test_distribution_files_package_dir():
